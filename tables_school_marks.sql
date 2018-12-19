@@ -12,12 +12,11 @@ CREATE TABLE Users(
 )
 
 --Table evaluations
-CREATE TABLE Evaluation(
-    id int PRIMARY KEY NOT NULL,
-   	FOREIGN KEY(user) REFERENCES Users(user),
+CREATE TABLE Marks(
+   FOREIGN KEY(user) REFERENCES Users(user),
     FOREIGN KEY(subjectid) REFERENCES Subjects(id),
     FOREIGN KEY(taskid) REFERENCES TaskTypes(id),
-	  description varchar(100),
+    description varchar(100),
     marks decimal(2,2),
     evaluation varchar(20),
     constraint PK_Evaluation PRIMARY KEY (user,subjectid)
@@ -26,7 +25,7 @@ CREATE TABLE Evaluation(
 
 --Table subjects
 CREATE TABLE Subjects(
-    id INT PRIMARY KEY NOT NULL,
+    id char(3) PRIMARY KEY NOT NULL,
     name VARCHAR(25)
 )
 
