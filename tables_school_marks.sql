@@ -33,6 +33,6 @@ CREATE TABLE Subjects(
 --Table task types
 CREATE TABLE TaskTypes(
   id int PRIMARY KEY NOT NULL,
-  percentage decimal(1,2),
+  percentage decimal(2,2),
   name varchar(25)
 )
