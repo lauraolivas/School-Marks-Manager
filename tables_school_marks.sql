@@ -19,7 +19,7 @@ CREATE TABLE Marks(
     description varchar(100),
     marks decimal(2,2),
     evaluation varchar(20),
-    constraint PK_Evaluation PRIMARY KEY (user,subjectid)
+    constraint PK_Evaluation PRIMARY KEY (user,subjectid,taskid)
 )
 --Foreign key marks: subjectid
 ALTER TABLE marks
