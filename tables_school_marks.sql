@@ -39,6 +39,10 @@ CREATE TABLE Subjects(
     name VARCHAR(25)
 )
 
+--Foreing key subjects: 
+ALTER TABLE Subjects
+ADD FOREIGN KEY (teacher) REFERENCES users(user)
+
 --Table task types
 CREATE TABLE TaskTypes(
   id int PRIMARY KEY NOT NULL,
