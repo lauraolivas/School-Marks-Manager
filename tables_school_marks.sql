@@ -15,11 +15,11 @@ CREATE TABLE Users(
 CREATE TABLE Marks(
     user varchar(25),
     subjectid char(3),
-    taskid int,
+    taskname nvarchar(25);
     description varchar(100),
     marks decimal(2,2),
     evaluation varchar(20),
-    constraint PK_Evaluation PRIMARY KEY (user,subjectid,taskid)
+    constraint PK_Evaluation PRIMARY KEY (user,subjectid,taskname)
 )
 --Foreign key marks: subjectid
 ALTER TABLE marks
@@ -31,12 +31,13 @@ ADD FOREIGN KEY (user) REFERENCES users(user)
 
 --Foreign key marks: user
 ALTER TABLE marks
-ADD FOREIGN KEY (taskid) REFERENCES tasktypes(id)
+ADD FOREIGN KEY (taskname) REFERENCES tasktypes(name)
 
 --Table subjects
 CREATE TABLE Subjects(
     id char(3) PRIMARY KEY NOT NULL,
-    name VARCHAR(25)
+    name VARCHAR(25),
+    teacher varchar(25)
 )
 
 --Foreing key subjects: 
