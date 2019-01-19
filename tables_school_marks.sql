@@ -50,3 +50,7 @@ CREATE TABLE TaskTypes(
   percentage decimal(2,2),
   name varchar(25)
 )
+CREATE TABLE subject_users(
+  subjectid varchar(25) NOT NULL,
+  user varchar(25) NOT NULL,
+)
