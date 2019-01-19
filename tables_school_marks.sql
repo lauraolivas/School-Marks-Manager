@@ -13,13 +13,13 @@ CREATE TABLE Users(
 
 --Table evaluations
 CREATE TABLE Marks(
-    user varchar(25),
+    userid varchar(25),
     subjectid char(3),
     taskname nvarchar(25);
     description varchar(100),
     marks decimal(2,2),
     evaluation varchar(20),
-    constraint PK_Evaluation PRIMARY KEY (user,subjectid,taskname)
+    constraint PK_Evaluation PRIMARY KEY (userid,subjectid,taskname)
 )
 --Foreign key marks: subjectid
 ALTER TABLE marks
