@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>School Marks Manager - Index</title>
+    <title>School Marks Manager - Tables teachers</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -28,27 +28,114 @@
   <body id="page-top">
     <?php
     session_start();
-
-    if(!empty($_SESSION['user'])){
-      require ('./mysqli_connect.php');
-      $iq = "SELECT id FROM subjects";
-      $ir = @mysqli_query ($dbc, $iq);
-      $sid = @mysqli_fetch_array ($ir, MYSQLI_NUM);
-      //print_r($sid);
+    require ('./mysqli_connect.php');
+    if(!empty($_SESSION['user']) && $_SESSION['type']=='root'){
       
-      for($i=0;$i<count($sid);$i++){
-        $dropdown='<a class="dropdown-item" href="subjects.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
-                  <div class="dropdown-divider"></div>';
-        $subjects=
+      $display = 20;
+      if (isset($_GET['p']) && is_numeric($_GET['p'])) { 
+        $pages = $_GET['p'];
+      } else {
+        $iq = "SELECT COUNT(user) FROM users WHERE type='teacher'";
+        $ir = @mysqli_query ($dbc, $iq);
+        $numrecs = @mysqli_fetch_array ($ir, MYSQLI_NUM);
+        $records = $numrecs[0];
+        
+        
+        if ($records > $display) { 
+          $pages = ceil ($records/$display);
+        } else {
+          $pages = 1;
+        }
       }
+      
 
+      if (isset($_GET['s']) && is_numeric($_GET['s'])) {
+        $start = $_GET['s'];
+      }else{
+        $start = 0;
+      }
+    
+      $sort = (isset($_GET['sort'])) ? $_GET['sort'] : 'ln';
+
+      switch ($sort) {
+        case 'u':
+          $order_by = 'user ASC';
+          break;
+        case 'fn':
+          $order_by = 'firstname ASC';
+          break;
+        case 'ln':
+          $order_by = 'lastname ASC';
+          break;
+        case 'p':
+          $order_by = 'phone ASC';
+          break;
+        case 'e':
+          $order_by = 'email ASC';
+          break;
+        case 'pass':
+          $order_by = 'password ASC';
+          break;
+        default:
+          $order_by = 'lastname ASC';
+          $sort = 'ln';
+        break;
+      }
+      //echo $order_by;
+      //echo $start;
+      //echo $display;
+      $tableq = "SELECT user,firstname,lastname,phone,email,password FROM users WHERE type='teacher' ORDER BY $order_by LIMIT $start, $display";		
+      $tabler = @mysqli_query ($dbc, $tableq); 
+
+      $theader='<thead>
+                  <tr>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th><a href="table_teacher.php?sort=u">User</a></th>
+                    <th><a href="table_teacher.php?sort=fn">First name</th>
+                    <th><a href="table_teacher.php?sort=ln">Last name</th>
+                    <th><a href="table_teacher.php?sort=p">Phone</th>
+                    <th><a href="table_teacher.php?sort=e">Email</th>
+                    <th><a href="table_teacher.php?sort=pass">Password</th>
+                  </tr>
+                </thead>';
+
+      $tbody='';
+      while ($numrecs = mysqli_fetch_array ($tabler, MYSQLI_ASSOC)) {
+          $tbody = $tbody.'<tr>
+          <td><a href="edit_teacher.php?user=' . $numrecs['user'] . '">Edit</a></td>
+          <td><a href="delete_teacher.php?user=' . $numrecs['user'] . '">Delete</a></td>
+          <td>' . $numrecs['user'] . '</td>
+          <td>' . $numrecs['firstname'] . '</td>
+          <td>' . $numrecs['lastname'] . '</td>
+          <td>' . $numrecs['phone'] . '</td>
+          <td>' . $numrecs['email'] . '</td>
+          <td>' . $numrecs['password'] . '</td>
+        </tr>';
+      } 
+      mysqli_free_result ($tabler);
+      mysqli_close($dbc);
+      
+      if ($pages > 1) {
+        
+        $current_page = ($start/$display) + 1;
+        
+        if ($current_page != 1) {
+          $previous= '<a href="table_teacher.php?s=' . ($start - $display) . '&p=' . $pages . '&sort=' . $sort . '">&laquo;</a> ';
+        }
+        
+        
+        if ($current_page != $pages) {
+          $next= '<a href="table_teacher.php?s=' . ($start + $display) . '&p=' . $pages . '&sort=' . $sort . '">&raquo;</a>';
+        }
+        
+        
+      } 
+    
     ?>
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="index.html">School Marks Manager</a>
-      <!--<?php
-      
-      ?>-->
+      <a class="navbar-brand mr-1" href="index_teacher.php">School Marks Manager</a>
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
       </button>
@@ -70,14 +157,13 @@
         <li class="nav-item dropdown no-arrow mx-1">
           <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-bell fa-fw"></i>
-            <span class="badge badge-danger">2</span>
+            <span class="badge badge-danger">9+</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
-            <a class="dropdown-item" href="marks.php">Exam mark</a>
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="marks.php">Practices mark</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="marks.php">TAP mark</a>
+            <a class="dropdown-item" href="#">Something else here</a>
           </div>
         </li>
         <li class="nav-item dropdown no-arrow mx-1">
@@ -86,9 +172,10 @@
             <span class="badge badge-danger">7</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
-            <a class="dropdown-item" href="#">Messages</a>
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Write a message</a>
+            <a class="dropdown-item" href="#">Something else here</a>
           </div>
         </li>
         <li class="nav-item dropdown no-arrow">
@@ -111,25 +198,25 @@
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="index_teacher.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
           </a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link <?php if(!empty($dropdown)){echo "dropdown-toggle";} ?>" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-fw fa-folder"></i>
-            <span>Subjects</span>
+            <span>Pages</span>
           </a>
           <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <?php
-              if(!empty($dropdown)){
-                echo $dropdown;
-              }else{
-                echo '<a class="dropdown-item" href="There are not subjects">Login</a>
-                <div class="dropdown-divider"></div>';
-              }
-            ?>
+            <h6 class="dropdown-header">Login Screens:</h6>
+            <a class="dropdown-item" href="login.php">Login</a>
+            <a class="dropdown-item" href="register.php">Register</a>
+            <a class="dropdown-item" href="forgot-password.php">Forgot Password</a>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Other Pages:</h6>
+            <a class="dropdown-item" href="404.html">404 Page</a>
+            <a class="dropdown-item" href="blank.html">Blank Page</a>
           </div>
         </li>
         <li class="nav-item">
@@ -140,7 +227,7 @@
         <li class="nav-item">
           <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-table"></i>
-            <span>Average</span></a>
+            <span>Tables</span></a>
         </li>
       </ul>
 
@@ -156,70 +243,40 @@
             <li class="breadcrumb-item active">Overview</li>
           </ol>
 
-          <!-- Icon Cards-->
-          <div class="row">
-            <div class="col-xl-3 col-sm-6 mb-3">
-              <div class="card text-white bg-primary o-hidden h-100">
-                <div class="card-body">
-                  <div class="card-body-icon">
-                    <i class="fas fa-fw fa-comments"></i>
-                  </div>
-                  <div class="mr-5">Messages</div>
-                </div>
-                <a class="card-footer text-white clearfix small z-1" href="#">
-                  <span class="float-left">View</span>
-                  <span class="float-right">
-                    <i class="fas fa-angle-right"></i>
-                  </span>
-                </a>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-3">
-              <div class="card text-white bg-warning o-hidden h-100">
-                <div class="card-body">
-                  <div class="card-body-icon">
-                    <i class="fas fa-fw fa-list"></i>
-                  </div>
-                  <div class="mr-5">Marks</div>
-                </div>
-                <a class="card-footer text-white clearfix small z-1" href="marks.php">
-                  <span class="float-left">View Details</span>
-                  <span class="float-right">
-                    <i class="fas fa-angle-right"></i>
-                  </span>
-                </a>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-3">
-              <div class="card text-white bg-success o-hidden h-100">
-                <div class="card-body">
-                  <div class="card-body-icon">
-                    <i class="fas fa-fw fa-shopping-cart"></i>
-                  </div>
-                  <div class="mr-5">Subjects</div>
-                </div>
-                <a class="card-footer text-white clearfix small z-1" href="subjects_student.php">
-                  <span class="float-left">View Details</span>
-                  <span class="float-right">
-                    <i class="fas fa-angle-right"></i>
-                  </span>
-                </a>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 mb-3">
-              <div class="card text-white bg-danger o-hidden h-100">
-                <div class="card-body">
-                  <div class="card-body-icon">
-                    <i class="fas fa-fw fa-life-ring"></i>
-                  </div>
-                  <div class="mr-5">Average</div>
-                </div>
-                <a class="card-footer text-white clearfix small z-1" href="media.php">
-                  <span class="float-left">View Details</span>
-                  <span class="float-right">
-                    <i class="fas fa-angle-right"></i>
-                  </span>
-                </a>
+          <!-- Teachers  -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="fas fa-table"></i>
+              Teachers</div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                  <?php
+                  if (!empty($theader)&&!empty($tbody)){
+                    echo $theader.$tbody;
+                  }
+                  ?>
+                </table>
+                <?php
+                  if(!empty($previous)){
+                    echo $previous;
+                  }
+
+                  if ($pages > 1) {
+                    // Make all the numbered pages:
+                    for ($i = 1; $i <= $pages; $i++) {
+                      if ($i != $current_page) {
+                        echo '<a href="table_teacher.php?s=' . (($display * ($i - 1))) . '&p=' . $pages . '&sort=' . $sort . '">' . $i . '</a> ';
+                      } else {
+                        echo $i . ' ';
+                      }
+                    } 
+                  }
+
+                  if(!empty($next)){
+                    echo $next;
+                  }
+                ?>
               </div>
             </div>
           </div>
@@ -273,10 +330,10 @@
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
+    <!-- Page level plugin JavaScript
     <script src="vendor/chart.js/Chart.min.js"></script>
     <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>-->
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js"></script>

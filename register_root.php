@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>School Marks Manager - Index</title>
+    <title>School Marks Manager - Register</title>
 
     <!-- Bootstrap core CSS-->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -29,19 +29,9 @@
     <?php
     session_start();
 
-    if(!empty($_SESSION['user'])){
+    if(!empty($_SESSION['user'])&&$_SESSION['type']=='root'){
       require ('./mysqli_connect.php');
-      $iq = "SELECT id FROM subjects";
-      $ir = @mysqli_query ($dbc, $iq);
-      $sid = @mysqli_fetch_array ($ir, MYSQLI_NUM);
-      //print_r($sid);
       
-      for($i=0;$i<count($sid);$i++){
-        $dropdown='<a class="dropdown-item" href="subjects.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
-                  <div class="dropdown-divider"></div>';
-        $subjects=
-      }
-
     ?>
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
@@ -73,11 +63,9 @@
             <span class="badge badge-danger">2</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
-            <a class="dropdown-item" href="marks.php">Exam mark</a>
+            <a class="dropdown-item" href="marks.php">New student registered</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="marks.php">Practices mark</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="marks.php">TAP mark</a>
+            <a class="dropdown-item" href="marks.php">Techer deleted</a>
           </div>
         </li>
         <li class="nav-item dropdown no-arrow mx-1">
@@ -111,36 +99,21 @@
       <!-- Sidebar -->
       <ul class="sidebar navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="index_root.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
           </a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link <?php if(!empty($dropdown)){echo "dropdown-toggle";} ?>" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link" href="register_root.php">
             <i class="fas fa-fw fa-folder"></i>
-            <span>Subjects</span>
+            <span>Register</span>
           </a>
-          <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-            <?php
-              if(!empty($dropdown)){
-                echo $dropdown;
-              }else{
-                echo '<a class="dropdown-item" href="There are not subjects">Login</a>
-                <div class="dropdown-divider"></div>';
-              }
-            ?>
-          </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="charts.html">
+          <a class="nav-link" href="tables_root.php">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Marks</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Average</span></a>
+            <span>View tables</span></a>
         </li>
       </ul>
 
@@ -162,11 +135,11 @@
               <div class="card text-white bg-primary o-hidden h-100">
                 <div class="card-body">
                   <div class="card-body-icon">
-                    <i class="fas fa-fw fa-comments"></i>
+                    <i class="fas fa-fw fa-archive"></i>
                   </div>
-                  <div class="mr-5">Messages</div>
+                  <div class="mr-5">Student</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="#">
+                <a class="card-footer text-white clearfix small z-1" href="register_student.php">
                   <span class="float-left">View</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -178,11 +151,11 @@
               <div class="card text-white bg-warning o-hidden h-100">
                 <div class="card-body">
                   <div class="card-body-icon">
-                    <i class="fas fa-fw fa-list"></i>
+                    <i class="fas fa-fw fa-archive"></i>
                   </div>
-                  <div class="mr-5">Marks</div>
+                  <div class="mr-5">Teacher</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="marks.php">
+                <a class="card-footer text-white clearfix small z-1" href="register_teacher.php">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -194,11 +167,11 @@
               <div class="card text-white bg-success o-hidden h-100">
                 <div class="card-body">
                   <div class="card-body-icon">
-                    <i class="fas fa-fw fa-shopping-cart"></i>
+                    <i class="fas fa-fw fa-archive"></i>
                   </div>
-                  <div class="mr-5">Subjects</div>
+                  <div class="mr-5">Subject</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="subjects_student.php">
+                <a class="card-footer text-white clearfix small z-1" href="register_subject.php">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -206,15 +179,16 @@
                 </a>
               </div>
             </div>
+
             <div class="col-xl-3 col-sm-6 mb-3">
               <div class="card text-white bg-danger o-hidden h-100">
                 <div class="card-body">
                   <div class="card-body-icon">
-                    <i class="fas fa-fw fa-life-ring"></i>
+                    <i class="fas fa-fw fa-archive"></i>
                   </div>
-                  <div class="mr-5">Average</div>
+                  <div class="mr-5">User subjects</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="media.php">
+                <a class="card-footer text-white clearfix small z-1" href="register_user_subject.php">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -222,6 +196,7 @@
                 </a>
               </div>
             </div>
+
           </div>
 
         </div>

@@ -28,7 +28,9 @@
   <body id="page-top">
     <?php
     session_start();
-
+    if(!empty($logerror)){
+      echo $logerror;
+    }
     if(!empty($_SESSION['user'])){
       require ('./mysqli_connect.php');
       $iq = "SELECT id FROM subjects";
@@ -39,7 +41,6 @@
       for($i=0;$i<count($sid);$i++){
         $dropdown='<a class="dropdown-item" href="subjects.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
                   <div class="dropdown-divider"></div>';
-        $subjects=
       }
 
     ?>
@@ -198,7 +199,7 @@
                   </div>
                   <div class="mr-5">Subjects</div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="subjects_student.php">
+                <a class="card-footer text-white clearfix small z-1" href="subjects.php">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fas fa-angle-right"></i>
@@ -286,17 +287,7 @@
     <script src="js/demo/chart-area-demo.js"></script>
     <?php
     }else{
-      echo '<div class="container" id="container">
-            <div class="card card-register mx-auto mt-5">
-              <div class="card-header text-danger">ERROR</div>
-              <div class="card-body">
-                <div class="text-center">
-                  <p>You are not a teacher</p>
-                  <a href="login.php" class="d-block small mt-3">Back to login</a>
-                </div>
-              </div>
-            </div>
-          </div>';
+      $logerror='ERROR: You are not logged';
     }
     ?>
   </body>
