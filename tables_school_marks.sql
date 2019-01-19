@@ -53,4 +53,5 @@ CREATE TABLE TaskTypes(
 CREATE TABLE subject_users(
   subjectid varchar(25) NOT NULL,
   user varchar(25) NOT NULL,
+  constraint PK_SU PRIMARY KEY (user,subjectid)
 )
