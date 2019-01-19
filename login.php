@@ -44,8 +44,8 @@
         $num = @mysqli_num_rows($r);
 
         if ($num==1){
-          
-          //Do session stuff
+
+        //Do session stuff
           $_SESSION['user']=$_POST['user'];
 
           $t="SELECT type from users where user='$user'";
@@ -54,14 +54,23 @@
 
           if ($tnum==1){
 
+            //Do session stuff
+            
+
             $row = mysqli_fetch_array($type, MYSQLI_NUM);
             
+            $_SESSION['type']=$row[0];
+
             if(strtolower($row[0])=='student'){
               header ('Location: index_student.php');
               mysqli_close($dbc);
 			        exit();
-            }else{
+            }elseif(strtolower($row[0])=='teacher'){
               header ('Location: index_teacher.php');
+              mysqli_close($dbc);
+			        exit();
+            }elseif(strtolower($row[0])=='root'){
+              header ('Location: index_root.php');
               mysqli_close($dbc);
 			        exit();
             }
