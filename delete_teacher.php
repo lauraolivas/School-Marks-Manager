@@ -74,7 +74,7 @@
           <form action="" method="post">
             <div class="form-group">
               <div class="form-label-group">
-                <input type="passwoed" id="inputPassword" name="pass1" class="form-control" placeholder="Password" required="required" autofocus="autofocus">
+                <input type="password" id="inputPassword" name="pass1" class="form-control" placeholder="Password" required="required" autofocus="autofocus">
                 <label for="inputPassword">Password</label>
               </div>
             </div>
