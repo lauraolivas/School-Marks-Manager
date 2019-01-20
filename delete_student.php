@@ -38,15 +38,15 @@
       }
       
       if ($_SERVER['REQUEST_METHOD']=='POST'){
-        if(!empty($_POST['inputPassword'])&&empty($_POST['confirmPassword'])){
+        if(!empty($_POST['pass1'])&&empty($_POST['pass2'])){
           $error='<p>Fill the confirm password</p>';
-        }elseif($_POST['inputPassword']!==$_POST['confirmPassword']){
+        }elseif($_POST['pass1']!==$_POST['pass2']){
           $error='<p>Fill the confirm password correctly</p>';
         }else{
           require ('./mysqli_connect.php');
 
 		      // Make the query:
-		      $q = "DELETE FROM users WHERE user=$user LIMIT 1";		
+		      $q = "DELETE FROM users WHERE user='$user' LIMIT 1";		
 	      	$r = @mysqli_query ($dbc, $q);
           
           if (mysqli_affected_rows($dbc) == 1) {
@@ -117,3 +117,4 @@
   </body>
   
 </html>
+
