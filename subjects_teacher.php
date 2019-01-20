@@ -45,6 +45,31 @@
         
         if(!empty($_GET['subject'])){
           $subject=$_GET['subject'];
+          
+          $viewicon='';
+          $icons=["Put marks"=>"marks.php?subject=$subject","Averages"=>"average.php?subject=$subject","Register tasktype"=>"register_tasktype.php"];
+          
+            foreach($icons as $icon=>$url){
+              echo $icon;
+              $viewicon.='<div class="col-xl-3 col-sm-6 mb-3">
+              <div class="card text-white bg-info o-hidden h-100">
+                <div class="card-body">
+                  <div class="card-body-icon">
+                    <i class="fas fa-fw fa-archive"></i>
+                  </div>
+                  <div class="mr-5">'.$icon.'</div>
+                </div>
+                  <a class="card-footer text-white clearfix small z-1" href="'.$url.'">
+                    <span class="float-left">View</span>
+                    <span class="float-right">
+                      <i class="fas fa-angle-right"></i>
+                    </span>
+                  </a>
+                </div>
+                </div>';
+            }
+          
+      
 
           $display = 20;
           if (isset($_GET['p']) && is_numeric($_GET['p'])) { 
@@ -127,36 +152,36 @@
             }
             
             
-          } 
-
+          }
+          
         }else{
-          foreach($bgs as $bg){
-            $iconc='<div class="col-xl-3 col-sm-6 mb-3">
-                      <div class="card text-white '.$bg.' o-hidden h-100">
-                        <div class="card-body">
-                          <div class="card-body-icon">
-                            <i class="fas fa-fw fa-graduation-cap"></i>
+            foreach($bgs as $bga){
+              $iconc='<div class="col-xl-3 col-sm-6 mb-3">
+                        <div class="card text-white '.$bga.' o-hidden h-100">
+                          <div class="card-body">
+                            <div class="card-body-icon">
+                              <i class="fas fa-fw fa-graduation-cap"></i>
+                            </div>
+                            <div class="mr-5">'.$sid[$i].'</div>
                           </div>
-                          <div class="mr-5">'.$sid[$i].'</div>
+                          <a class="card-footer text-white clearfix small z-1" href="subjects_teacher.php?subject='.$sid[$i].'">
+                            <span class="float-left">View</span>
+                            <span class="float-right">
+                              <i class="fas fa-angle-right"></i>
+                            </span>
+                          </a>
                         </div>
-                        <a class="card-footer text-white clearfix small z-1" href="subjects_teacher.php?subject='.$sid[$i].'">
-                          <span class="float-left">View</span>
-                          <span class="float-right">
-                            <i class="fas fa-angle-right"></i>
-                          </span>
-                        </a>
-                      </div>
-                    </div>';
+                      </div>';
+              }
+            
           }
         }
-      }
-
       
 
     ?>
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-      <a class="navbar-brand mr-1" href="index.html">School Marks Manager</a>
+      <a class="navbar-brand mr-1" href="index_teacher.php">School Marks Manager</a>
       <!--<?php
       
       ?>-->
@@ -258,17 +283,22 @@
           </ol>
 
           <!-- Icon Cards-->
+          
           <div class="row">
               <?php
+              if(!empty($viewicon)){
+                echo $viewicon;
+              }
                 if(!empty($iconc)){
                   echo $iconc;
                 }
+                
               ?>
           </div>
           <?php if(!empty($subject)){ ?>
           <div class="card mb-3">
             <div class="card-header">
-              <i class="fas fa-table"></i>
+              <i class="fas fa-users"></i>
               Students</div>
             <div class="card-body">
               <div class="table-responsive">
