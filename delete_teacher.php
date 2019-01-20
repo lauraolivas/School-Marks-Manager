@@ -38,16 +38,16 @@
       }
       
       if ($_SERVER['REQUEST_METHOD']=='POST'){
-        if(!empty($_POST['inputPassword'])&&empty($_POST['confirmPassword'])){
+        if(!empty($_POST['pass1'])&&empty($_POST['pass2'])){
           $error='<p>Fill the confirm password</p>';
-        }elseif($_POST['inputPassword']!==$_POST['confirmPassword']){
+        }elseif($_POST['pass1']!=$_POST['pass2']){
           $error='<p>Fill the confirm password correctly</p>';
         }else{
           require ('./mysqli_connect.php');
 
 		      // Make the query:
-		      $q = "DELETE FROM users WHERE user=$user LIMIT 1";		
-	      	$r = @mysqli_query ($dbc, $q);
+		      $dq = "DELETE FROM users WHERE user='$user' LIMIT 1";		
+	      	$dr = @mysqli_query ($dbc, $dq);
           
           if (mysqli_affected_rows($dbc) == 1) {
 			      $delete= '<p>The user has been deleted.</p>';
@@ -74,7 +74,7 @@
           <form action="" method="post">
             <div class="form-group">
               <div class="form-label-group">
-                <input type="text" id="inputPassword" name="pass1" class="form-control" placeholder="User" required="required" autofocus="autofocus">
+                <input type="passwoed" id="inputPassword" name="pass1" class="form-control" placeholder="Password" required="required" autofocus="autofocus">
                 <label for="inputPassword">Password</label>
               </div>
             </div>
