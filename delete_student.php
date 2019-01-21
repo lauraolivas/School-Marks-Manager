@@ -44,7 +44,6 @@
           $error='<p>Fill the confirm password correctly</p>';
         }else{
           require ('./mysqli_connect.php');
-
 		      // Make the query:
 		      $q = "DELETE FROM users WHERE user='$user' LIMIT 1";		
 	      	$r = @mysqli_query ($dbc, $q);
@@ -54,7 +53,6 @@
 		      } else {
 			      $error= '<p>The user could not be deleted due to a system error.</p>'; 
 		      }
-
         mysqli_close($dbc);
         }
       }
@@ -88,6 +86,7 @@
           </form>
           <div class="text-center">
             <a class="d-block small" href="modifier_delete_student.php">Back to class list</a>
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
@@ -107,6 +106,7 @@
               </div>';
       }
     ?>
+    
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
