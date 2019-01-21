@@ -70,7 +70,6 @@
           $unum = @mysqli_num_rows($ur);
           
           if($u==$user||$unum==0){
-
             if(!empty($_POST['firstName'])){
               $fn = mysqli_real_escape_string($dbc, trim($_POST['firstName']));
             }else{
@@ -79,7 +78,6 @@
               $fnrow = mysqli_fetch_array($fnr, MYSQLI_NUM);
               $fn=$fnrow[0];
             }
-
             if(!empty($_POST['lastName'])){
               $ln = mysqli_real_escape_string($dbc, trim($_POST['lastName']));
             }else{
@@ -97,7 +95,6 @@
               $evrow = mysqli_fetch_array($evr, MYSQLI_NUM);
               $e=$evrow[0];
             }
-
             if(!empty($_POST['phone'])){
               $p = mysqli_real_escape_string($dbc, trim($_POST['phone']));
             }else{
@@ -117,7 +114,6 @@
             }
           
           
-
           $q = "UPDATE `users` SET `user`='$u',`firstname`='$fn',`lastname`='$ln',`email`='$e',`password`=SHA1('$ip'),`type`='student',`phone`=$p WHERE user='$user' LIMIT 1";
           $r = @mysqli_query ($dbc, $q);
               
@@ -132,11 +128,9 @@
         }
       }
     }
-
     
     
     
-
   
   ?>
     <div class="container" id="econtainer" style="<?php if(!empty($error)){ echo 'display:block;'; }else{echo 'display:none';}?>">
@@ -245,6 +239,7 @@
           </form>
           <div class="text-center">
             <a class="d-block small mt-3" href="<?php if($_SESSION['type']=='teacher'){ echo 'index_teacher.php'; }elseif($_SESSION['type']=='root'){echo 'index_root.php';} ?>">Back to dashboard</a>
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
@@ -265,6 +260,7 @@
           </div>';
     }
     ?>
+    
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
