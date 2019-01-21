@@ -36,23 +36,23 @@
             $bgs=['bg-danger','bg-warning','bg-success','bg-primary'];
 
             $user=mysqli_real_escape_string($dbc, trim($_SESSION['user']));
-            $iq = "SELECT ID FROM subjects where teacher='$user'";
-            $ir=mysqli_query($dbc, $iq);
-            $sid=mysqli_fetch_array($ir, MYSQLI_NUM);
-            //$said=mysqli_num_rows($ir);
-            //print_r($ir);
-            $dropdown="";
-            //print_r($sid);
-            for($i=0;$i<count($sid);$i++){
-                //echo $sid[$i];
-                $dropdown.='<a class="dropdown-item" href="subjects_teacher.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
-                  <div class="dropdown-divider"></div>';
-
+                $iq = "SELECT ID FROM subjects where teacher='$user'";
+                $ir=mysqli_query($dbc, $iq);
+                
+                //$said=mysqli_num_rows($ir);
+                //print_r($ir);
+                $dropdown="";
+                //print_r($sid);
+                while($sid=mysqli_fetch_array($ir, MYSQLI_ASSOC)){
+                
+                    $dropdown.='<a class="dropdown-item" href="subjects_teacher.php?subject='.$sid['ID'].'">'.$sid['ID'].'</a>
+                      <div class="dropdown-divider"></div>';
+                }
                 if(!empty($_GET['subject'])){
                     $subject=$_GET['subject'];
 
                     $viewicon='';
-                    $icons=["Put marks"=>"marks.php?subject=$subject","View marks"=>"view_marks.php?subject=$subject","Averages"=>"average.php?subject=$subject","Register tasktype"=>"register_tasktype.php"];
+                    $icons=["Put marks"=>"marks.php?subject=$subject","View marks"=>"view_marks.php?subject=$subject","Averages"=>"average.php?subject=$subject","Register tasktype"=>"register_tasktype.php?subject=$subject"];
 
                     foreach($icons as $icon=>$url){
                         $viewicon.='<div class="col-xl-3 col-sm-6 mb-3">
@@ -160,16 +160,19 @@
 
                 }else{
                     $iconc='';
-
-                    $iconc.='<div class="col-xl-3 col-sm-6 mb-3">
+                    $i=0;
+                    $iconq = "SELECT ID FROM subjects where teacher='$user'";
+                    $iconr=mysqli_query($dbc, $iconq);
+                    while($said = mysqli_fetch_array($iconr, MYSQLI_ASSOC)){
+                      $iconc.='<div class="col-xl-3 col-sm-6 mb-3">
                         <div class="card text-white '.$bgs[$i].' o-hidden h-100">
                           <div class="card-body">
                             <div class="card-body-icon">
                               <i class="fas fa-fw fa-graduation-cap"></i>
                             </div>
-                            <div class="mr-5">'.$sid[$i].'</div>
+                            <div class="mr-5">'.$said['ID'].'</div>
                           </div>
-                          <a class="card-footer text-white clearfix small z-1" href="subjects_teacher.php?subject='.$sid[$i].'">
+                          <a class="card-footer text-white clearfix small z-1" href="subjects_teacher.php?subject='.$said['ID'].'">
                             <span class="float-left">View</span>
                             <span class="float-right">
                               <i class="fas fa-angle-right"></i>
@@ -177,8 +180,11 @@
                           </a>
                         </div>
                       </div>';
+                      $i++;
+                    }
+                    
                 }
-            }
+            
 
 
         ?>
