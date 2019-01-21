@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 
   <head>
@@ -136,6 +136,7 @@
           </form>
           <div class="text-center">
             <a class="d-block small mt-3" href="index_teacher.php">Back to dashboard</a>
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
