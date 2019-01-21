@@ -48,7 +48,6 @@
         }
       }
       
-
       if (isset($_GET['s']) && is_numeric($_GET['s'])) {
         $start = $_GET['s'];
       }else{
@@ -56,7 +55,6 @@
       }
     
       $sort = (isset($_GET['sort'])) ? $_GET['sort'] : 'ln';
-
       switch ($sort) {
         case 'u':
           $order_by = 'user ASC';
@@ -86,7 +84,6 @@
       //echo $display;
       $tableq = "SELECT user,firstname,lastname,phone,email,password FROM users WHERE type='student' ORDER BY $order_by LIMIT $start, $display";		
       $tabler = @mysqli_query ($dbc, $tableq); 
-
       $theader='<thead>
                   <tr>
                     <th>Edit</th>
@@ -99,7 +96,6 @@
                     <th><a href="table_student.php?sort=pass">Password</th>
                   </tr>
                 </thead>';
-
       $tbody='';
       while ($numrecs = mysqli_fetch_array ($tabler, MYSQLI_ASSOC)) {
           $tbody = $tbody.'<tr>
@@ -246,7 +242,6 @@
                   if(!empty($previous)){
                     echo $previous;
                   }
-
                   if ($pages > 1) {
                     // Make all the numbered pages:
                     for ($i = 1; $i <= $pages; $i++) {
@@ -257,7 +252,6 @@
                       }
                     } 
                   }
-
                   if(!empty($next)){
                     echo $next;
                   }
@@ -302,7 +296,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <input type="submit" class="btn btn-primary" value="Logout">
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
@@ -344,4 +338,3 @@
   </body>
 
 </html>
-    
