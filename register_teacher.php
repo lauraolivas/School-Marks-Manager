@@ -27,7 +27,6 @@
   session_start();
   if(!empty($_SESSION['user'])&&$_SESSION['type']=="root"){
     if ($_SERVER['REQUEST_METHOD']=='POST'){
-
       //Connect to db
       require ('./mysqli_connect.php');
       
@@ -51,7 +50,6 @@
         $ln = mysqli_real_escape_string($dbc, trim($_POST['lastName']));
         $e= mysqli_real_escape_string($dbc, trim($_POST['email']));
         $ip = mysqli_real_escape_string($dbc, trim($_POST['inputPassword']));
-
         // Make the insert query:
         $q = "INSERT INTO `users`(`user`, `firstname`, `lastname`, `email`, `password`, `type`, `phone`) VALUES ('$user', '$fn','$ln', '$e', SHA1('$ip'), 'teacher','$p')";		
         $r = @mysqli_query ($dbc, $q); 
@@ -165,6 +163,7 @@
           </form>
           <div class="text-center">
             <a class="d-block small mt-3" href="index_teacher.php">Back to dashboard</a>
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
