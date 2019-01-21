@@ -40,7 +40,6 @@
                 }
                 $eoption.=">".$ev."</option>";
             }
-
             if(!empty($_GET['subject'])){
                 $subject=mysqli_real_escape_string($dbc, trim($_GET['subject']));
                 $user=mysqli_real_escape_string($dbc, trim($_SESSION['user']));
@@ -61,7 +60,6 @@
                 header("Location: subjects_teacher.php");
                 exit;
             }
-
             $kq = "SELECT name FROM tasktypes";
             $kr =  @mysqli_query ($dbc, $kq);
             $krecs = @mysqli_fetch_array ($kr, MYSQLI_NUM);
@@ -75,7 +73,6 @@
                 }
                 $option.=">$krecs[$o]</option>";
             }
-
             $display = 20;
             if (isset($_GET['p']) && is_numeric($_GET['p'])) { 
                 $pages = $_GET['p'];
@@ -84,22 +81,18 @@
                 $ir = @mysqli_query ($dbc, $iq);
                 $irecs = @mysqli_fetch_array ($ir, MYSQLI_NUM);
                 $records = $irecs[0];
-
                 if ($records > $display) { 
                     $pages = ceil ($records/$display);
                 } else {
                     $pages = 1;
                 }
             }
-
             if (isset($_GET['s']) && is_numeric($_GET['s'])) {
                 $start = $_GET['s'];
             }else{
                 $start = 0;
             }
-
             $sort = (isset($_GET['sort'])) ? $_GET['sort'] : 'ln';
-
             switch ($sort) {
                 case 'fn':
                     $order_by = 'firstname ASC';
@@ -112,10 +105,8 @@
                     $sort = 'ln';
                     break;
             }
-
             $tableq = "SELECT u.firstname,u.lastname FROM users as u inner join subjects_users as su on u.user=su.user WHERE u.type='student' and su.subjectid='$subject' ORDER BY $order_by LIMIT $start, $display";		
             $tabler = @mysqli_query ($dbc, $tableq); 
-
             $theader='<thead>
                 <tr>
                     <th><a href="marks.php?sort=fn">First name</th>
@@ -123,9 +114,7 @@
                     <th>Mark</th>
                 </tr>
             </thead>';
-
         
-
             $tbody='';
             $j=1;
             while ($recs = mysqli_fetch_array ($tabler, MYSQLI_ASSOC)) {
@@ -140,9 +129,7 @@
                 $tbody.='"></td>';
                 $j++;
             } 
-
             if ($_SERVER['REQUEST_METHOD']=='POST'){
-
                 $tablemarkq="SELECT u.user FROM users as u inner join subjects_users as su on u.user=su.user WHERE u.type='student' and su.subjectid='$subject'";
                 $tablemarkr = @mysqli_query ($dbc, $tablemarkq);
                 
@@ -168,12 +155,10 @@
                     exit;
                 }
                 
-
                 $m=1;
                 while ($recs2 = mysqli_fetch_array ($tablemarkr, MYSQLI_ASSOC)) {
                     $mark = mysqli_real_escape_string($dbc, trim($_POST["mark$m"]));
                     $user=mysqli_real_escape_string($dbc, trim($recs2['user']));
-
                     $insq = "INSERT INTO marks(`userid`,`subjectid`,`taskname`,`description`,`marks`,`evaluation`) VALUES('$user','$subject','$tasktype','$description',$mark,'$evaluation')";
                     $insr = @mysqli_query ($dbc, $insq);
                     if($insr){
@@ -186,28 +171,18 @@
             }
             mysqli_free_result ($tabler);
             mysqli_close($dbc);
-
-
             if ($pages > 1) {
-
                 $current_page = ($start/$display) + 1;
-
                 if ($current_page != 1) {
                     $previous= '<a href="modifier_delete_student.php?s=' . ($start - $display) . '&p=' . $pages . '&sort=' . $sort . '">&laquo;</a> ';
                 }
-
-
                 if ($current_page != $pages) {
                     $next= '<a href="modifier_delete_student.php?s=' . ($start + $display) . '&p=' . $pages . '&sort=' . $sort . '">&raquo;</a>';
                 }
-
             }
-
             
-
             
         
-
         ?>
 
         <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
@@ -360,7 +335,6 @@
                                     if(!empty($previous)){
                                         echo $previous;
                                     }
-
                                     if ($pages > 1) {
                                         // Make all the numbered pages:
                                         for ($i = 1; $i <= $pages; $i++) {
@@ -371,7 +345,6 @@
                                             }
                                         } 
                                     }
-
                                     if(!empty($next)){
                                         echo $next;
                                     }
@@ -416,7 +389,7 @@
                         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" onclick="">Logout</button>
+                            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
                         </div>
                     </div>
                 </div>
