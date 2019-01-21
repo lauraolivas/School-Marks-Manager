@@ -28,7 +28,6 @@
   <body id="page-top">
     <?php
     session_start();
-
     if(!empty($_SESSION['user'])&&$_SESSION['type']=='student'){
       require ('./mysqli_connect.php');
       $iq = "SELECT id FROM subjects";
@@ -40,7 +39,6 @@
         $dropdown='<a class="dropdown-item" href="subjects.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
                   <div class="dropdown-divider"></div>';
       }
-
     ?>
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
@@ -259,7 +257,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <input type="submit" class="btn btn-primary" value="Logout">
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
