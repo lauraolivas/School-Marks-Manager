@@ -31,9 +31,10 @@
         require ('./mysqli_connect.php');
         if(!empty($_SESSION['user'])&&$_SESSION['type']='teacher'){
             
-            $evaluations=['First evaluation','Second evaluation','Third evaluation'];
+            $evaluations=["First evaluation","Second evaluation","Third evaluation"];
+            $eoption="";
             foreach($evaluations as $ev){
-                $eoption="<option value='".$ev."'";
+                $eoption.="<option value='".$ev."'";
                 if(isset($_POST['evaluation'])){
                     $eoption.='selected=selected';
                 }
@@ -42,6 +43,23 @@
 
             if(!empty($_GET['subject'])){
                 $subject=mysqli_real_escape_string($dbc, trim($_GET['subject']));
+                $user=mysqli_real_escape_string($dbc, trim($_SESSION['user']));
+                $iq = "SELECT id FROM subjects where teacher='$user'";
+                $ir=mysqli_query($dbc, $iq);
+                $sid=mysqli_fetch_array($ir, MYSQLI_NUM);
+                //$said=mysqli_num_rows($ir);
+                //print_r($ir);
+                $dropdown="";
+                //print_r($sid);
+                for($i=0;$i<count($sid);$i++){
+                    //echo $sid[$i];
+                    $dropdown.='<a class="dropdown-item" href="subjects_teacher.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
+                      <div class="dropdown-divider"></div>';
+                }
+            }else{
+                echo '<p class="text-danger">ERROR: Choose the subject</p>';
+                header("Location: subjects_teacher.php");
+                exit;
             }
 
             $kq = "SELECT name FROM tasktypes";
@@ -49,8 +67,9 @@
             $krecs = @mysqli_fetch_array ($kr, MYSQLI_NUM);
             //echo count($krecs);
             //print_r($krecs);
+            $option="";
             for($o=0;$o<count($krecs);$o++){
-                $option="<option value='$krecs[$o]'";
+                $option.="<option value='$krecs[$o]'";
                 if (isset($_POST['size'])){
                     $option.='selected="selected"';
                 }
@@ -99,8 +118,8 @@
 
             $theader='<thead>
                 <tr>
-                    <th><a href="diego.php?sort=fn">First name</th>
-                    <th><a href="diego.php?sort=ln">Last name</th>
+                    <th><a href="marks.php?sort=fn">First name</th>
+                    <th><a href="marks.php?sort=ln">Last name</th>
                     <th>Mark</th>
                 </tr>
             </thead>';
@@ -127,11 +146,26 @@
                 $tablemarkq="SELECT u.user FROM users as u inner join subjects_users as su on u.user=su.user WHERE u.type='student' and su.subjectid='$subject'";
                 $tablemarkr = @mysqli_query ($dbc, $tablemarkq);
                 
+                if(!empty($_POST['evaluation'])){
+                    $evaluation = mysqli_real_escape_string($dbc, trim($_POST["evaluation"]));
+                }else{
+                    $error[]='<p class="text-danger">Fill the evaluation</p>';
+                    header("Location: marks.php?subject=$subject");
+                    exit;
+                }
                 if(!empty($_POST['description'])){
                     $description = mysqli_real_escape_string($dbc, trim($_POST["description"]));
+                }else{
+                    $error[]='<p class="text-danger">Fill the decription</p>';
+                    header("Location: marks.php?subject=$subject");
+                    exit;
                 }
                 if(!empty($_POST['tasktype'])){
                     $tasktype = mysqli_real_escape_string($dbc, trim($_POST["tasktype"]));
+                }else{
+                    $error[]='<p class="text-danger">Fill the tasktype</p>';
+                    header("Location: marks.php?subject=$subject");
+                    exit;
                 }
                 
 
@@ -140,12 +174,12 @@
                     $mark = mysqli_real_escape_string($dbc, trim($_POST["mark$m"]));
                     $user=mysqli_real_escape_string($dbc, trim($recs2['user']));
 
-                    $insq = "INSERT INTO marks(`user`,`subjectid`,`taskname`,`description`,`mark`,`evaluation`) VALUES('$user','$subject','$tasktype','$description',$mark,'$evaluation')";
+                    $insq = "INSERT INTO marks(`userid`,`subjectid`,`taskname`,`description`,`marks`,`evaluation`) VALUES('$user','$subject','$tasktype','$description',$mark,'$evaluation')";
                     $insr = @mysqli_query ($dbc, $insq);
                     if($insr){
-                        echo 'bieeeen';
+                        $good='<p class="text-success">The marks has been registered correctly</p>';
                     }else{
-                        echo 'joder';
+                        $bad='<p class="text-warning">ERROR</p>';
                     }
                     $m++;
                 }
@@ -239,39 +273,29 @@
 
         <div id="wrapper">
 
-            <!-- Sidebar -->
-            <ul class="sidebar navbar-nav">
+             <!-- Sidebar -->
+             <ul class="sidebar navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="index.html">
+                    <a class="nav-link" href="index_teacher.php">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link <?php if(!empty($dropdown)&&$dropdown!=""){echo "dropdown-toggle";} ?>" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-fw fa-folder"></i>
-                        <span>Pages</span>
+                        <span>Subjects</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                        <h6 class="dropdown-header">Login Screens:</h6>
-                        <a class="dropdown-item" href="login.html">Login</a>
-                        <a class="dropdown-item" href="register.html">Register</a>
-                        <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Other Pages:</h6>
-                        <a class="dropdown-item" href="404.html">404 Page</a>
-                        <a class="dropdown-item" href="blank.html">Blank Page</a>
+                        <?php
+            if(!empty($dropdown)&&$dropdown!=""){
+                echo $dropdown;
+            }else{
+                echo '<a class="dropdown-item" href="There are not subjects">Login</a>
+                <div class="dropdown-divider"></div>';
+            }
+                        ?>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="charts.html">
-                        <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Qualification Graphics</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="tables.html">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Tables</span></a>
                 </li>
             </ul>
 
@@ -293,7 +317,15 @@
                             Students Table</div>
                         <div class="card-body">
                             <form method='POST' action="">
-                                
+                                <?php
+                                    if(!empty($error)){
+                                        echo $error[0];
+                                    }elseif(!empty($good)){
+                                        echo $good;
+                                    }elseif(!empty($bad)){
+                                        echo $bad;
+                                    }
+                                ?>
                                 <label for="description">Description: </label>
                                 <input type="text" name="description" id="description" required="required" class="form-control" value="<?php if(isset($_POST["description"])){echo $_POST["description"];}?>">
                                 <br>
@@ -301,7 +333,7 @@
                                 <label for="tasktype">Task type: </label>
                                 <select class="form-control" id="tasktype" name="tasktype">
                                     <?php 
-                                        if(!empty($option)){
+                                        if(!empty($option)&&$option!=""){
                                             echo $option;
                                         }
                                     ?>
@@ -310,7 +342,7 @@
                                 <label for="evaluation">Evaluation: </label>
                                 <select class="form-control" id="evaluation" name="evaluation">
                                     <?php 
-                                        if(!empty($eoption)){
+                                        if(!empty($eoption)&&$eoption!=""){
                                             echo $eoption;
                                         }
                                     ?>
@@ -319,7 +351,7 @@
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <?php
-                                        if (!empty($theader)&&!empty($tbody)){
+                                        if (!empty($theader)&&!empty($tbody)&&$tbody!=""&&$theader!=""){
                                             echo $theader.$tbody;
                                         }
                                         ?>
@@ -333,7 +365,7 @@
                                         // Make all the numbered pages:
                                         for ($i = 1; $i <= $pages; $i++) {
                                             if ($i != $current_page) {
-                                                echo '<a href="modifier_delete_student.php?s=' . (($display * ($i - 1))) . '&p=' . $pages . '&sort=' . $sort . '">' . $i . '</a> ';
+                                                echo '<a href="marks.php?s=' . (($display * ($i - 1))) . '&p=' . $pages . '&sort=' . $sort . '">' . $i . '</a> ';
                                             } else {
                                                 echo $i . ' ';
                                             }
