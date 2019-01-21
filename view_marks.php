@@ -30,7 +30,6 @@
     session_start();
     require ('./mysqli_connect.php');
     if(!empty($_SESSION['user']) && ($_SESSION['type']=='teacher'||$_SESSION['type']=='root')){
-
       if(!empty($_GET['subject'])){
         $subject=mysqli_real_escape_string($dbc, trim($_GET['subject']));
       }else{
@@ -38,7 +37,6 @@
         header("Location: subjects_teacher.php");
         exit;
       }
-
       $user=mysqli_real_escape_string($dbc, trim($_SESSION['user']));
             $iq = "SELECT ID FROM subjects where teacher='$user'";
             $ir=mysqli_query($dbc, $iq);
@@ -56,7 +54,6 @@
       if(!empty($_GET['tasktype'])){
         
         $tasktype=mysqli_real_escape_string($dbc, trim($_GET['tasktype']));
-
         $display = 20;
         if (isset($_GET['p']) && is_numeric($_GET['p'])) { 
           $pages = $_GET['p'];
@@ -74,7 +71,6 @@
           }
         }
         
-
         if (isset($_GET['s']) && is_numeric($_GET['s'])) {
           $start = $_GET['s'];
         }else{
@@ -82,7 +78,6 @@
         }
       
         $sort = (isset($_GET['sort'])) ? $_GET['sort'] : 'ln';
-
         switch ($sort) {
           case 'fn':
             $order_by = 'firstname ASC';
@@ -109,7 +104,6 @@
         //echo $display;
         $tableq = "SELECT u.user,u.firstname,u.lastname,m.marks,m.description,m.evaluation FROM users as u inner join subjects_users as su inner join marks as m on u.user=su.user and u.user=m.userid WHERE u.type='student' and su.subjectid='$subject' and m.taskname='$tasktype' ORDER BY $order_by LIMIT $start, $display";		
         $tabler = @mysqli_query ($dbc, $tableq); 
-
         $theader='<thead>
                     <tr>
                       <th>Edit</th>
@@ -120,7 +114,6 @@
                       <th><a href="view_marks.php?subject='.$subject.'&tasktype='.$_GET['tasktype'].'&sort=d">Description</th>
                       <th><a href="view_marks.php?subject='.$subject.'&tasktype='.$_GET['tasktype'].'&sort=e">Evaluation</th>
                   </thead>';
-
         $tbody='';
         while ($numrecs = mysqli_fetch_array ($tabler, MYSQLI_ASSOC))  {
             $tbody = $tbody.'<tr>
@@ -363,7 +356,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <input type="submit" class="btn btn-primary" value="Logout">
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
