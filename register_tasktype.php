@@ -97,6 +97,7 @@
           </form>
           <div class="text-center">
             <a class="d-block small mt-3" href="subjects_teacher.php">Back to subjects</a>
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
