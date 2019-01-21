@@ -28,32 +28,25 @@
     <body id="page-top">
         <?php
         session_start();
-
         if(!empty($_SESSION['user'])&&$_SESSION['type']=='teacher'){
             require ('./mysqli_connect.php');
-
-
             $bgs=['bg-danger','bg-warning','bg-success','bg-primary'];
-
             $user=mysqli_real_escape_string($dbc, trim($_SESSION['user']));
-                $iq = "SELECT ID FROM subjects where teacher='$user'";
-                $ir=mysqli_query($dbc, $iq);
-                
-                //$said=mysqli_num_rows($ir);
-                //print_r($ir);
-                $dropdown="";
-                //print_r($sid);
-                while($sid=mysqli_fetch_array($ir, MYSQLI_ASSOC)){
-                
-                    $dropdown.='<a class="dropdown-item" href="subjects_teacher.php?subject='.$sid['ID'].'">'.$sid['ID'].'</a>
-                      <div class="dropdown-divider"></div>';
-                }
+            $iq = "SELECT ID FROM subjects where teacher='$user'";
+            $ir=mysqli_query($dbc, $iq);
+            $sid=mysqli_fetch_array($ir, MYSQLI_NUM);
+            //$said=mysqli_num_rows($ir);
+            //print_r($ir);
+            $dropdown="";
+            //print_r($sid);
+            for($i=0;$i<count($sid);$i++){
+                //echo $sid[$i];
+                $dropdown.='<a class="dropdown-item" href="subjects_teacher.php?subject='.$sid[$i].'">'.$sid[$i].'</a>
+                  <div class="dropdown-divider"></div>';
                 if(!empty($_GET['subject'])){
                     $subject=$_GET['subject'];
-
                     $viewicon='';
-                    $icons=["Put marks"=>"marks.php?subject=$subject","View marks"=>"view_marks.php?subject=$subject","Averages"=>"average.php?subject=$subject","Register tasktype"=>"register_tasktype.php?subject=$subject"];
-
+                    $icons=["Put marks"=>"marks.php?subject=$subject","View marks"=>"view_marks.php?subject=$subject","Averages"=>"average.php?subject=$subject","Register tasktype"=>"register_tasktype.php"];
                     foreach($icons as $icon=>$url){
                         $viewicon.='<div class="col-xl-3 col-sm-6 mb-3">
               <div class="card text-white bg-info o-hidden h-100">
@@ -72,9 +65,6 @@
                 </div>
                 </div>';
                     }
-
-
-
                     $display = 20;
                     if (isset($_GET['p']) && is_numeric($_GET['p'])) { 
                         $pages = $_GET['p'];
@@ -83,24 +73,18 @@
                         $pagr = @mysqli_query ($dbc, $pagq);
                         $pagrecs = @mysqli_fetch_array ($pagr, MYSQLI_NUM);
                         $pagrecords = $pagrecs[0];
-
-
                         if ($pagrecords > $display) { 
                             $pages = ceil ($pagrecords/$display);
                         } else {
                             $pages = 1;
                         }
                     }
-
-
                     if (isset($_GET['s']) && is_numeric($_GET['s'])) {
                         $start = $_GET['s'];
                     }else{
                         $start = 0;
                     }
-
                     $sort = (isset($_GET['sort'])) ? $_GET['sort'] : 'ln';
-
                     switch ($sort) {
                         case 'fn':
                             $order_by = 'firstname ASC';
@@ -129,7 +113,6 @@
                     <th><a href="subjects_teacher.php?subject='.$subject.'&sort=e">Email</th>
                   </tr>
                 </thead>';
-
                     $tbody='';
                     while ($numrecs = mysqli_fetch_array ($rusers, MYSQLI_ASSOC)) {
                         $tbody .='<tr>
@@ -141,38 +124,26 @@
                     } 
                     mysqli_free_result ($rusers);
                     mysqli_close($dbc);
-
                     if ($pages > 1) {
-
                         $current_page = ($start/$display) + 1;
-
                         if ($current_page != 1) {
                             $previous= '<a href="subjects_teacher.php?s=' . ($start - $display) . '&p=' . $pages . '&sort=' . $sort . '">&laquo;</a> ';
                         }
-
-
                         if ($current_page != $pages) {
                             $next= '<a href="subjects_teacher.php?s=' . ($start + $display) . '&p=' . $pages . '&sort=' . $sort . '">&raquo;</a>';
                         }
-
-
                     }
-
                 }else{
                     $iconc='';
-                    $i=0;
-                    $iconq = "SELECT ID FROM subjects where teacher='$user'";
-                    $iconr=mysqli_query($dbc, $iconq);
-                    while($said = mysqli_fetch_array($iconr, MYSQLI_ASSOC)){
-                      $iconc.='<div class="col-xl-3 col-sm-6 mb-3">
+                    $iconc.='<div class="col-xl-3 col-sm-6 mb-3">
                         <div class="card text-white '.$bgs[$i].' o-hidden h-100">
                           <div class="card-body">
                             <div class="card-body-icon">
                               <i class="fas fa-fw fa-graduation-cap"></i>
                             </div>
-                            <div class="mr-5">'.$said['ID'].'</div>
+                            <div class="mr-5">'.$sid[$i].'</div>
                           </div>
-                          <a class="card-footer text-white clearfix small z-1" href="subjects_teacher.php?subject='.$said['ID'].'">
+                          <a class="card-footer text-white clearfix small z-1" href="subjects_teacher.php?subject='.$sid[$i].'">
                             <span class="float-left">View</span>
                             <span class="float-right">
                               <i class="fas fa-angle-right"></i>
@@ -180,13 +151,8 @@
                           </a>
                         </div>
                       </div>';
-                      $i++;
-                    }
-                    
                 }
-            
-
-
+            }
         ?>
         <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
@@ -299,7 +265,6 @@
             if(!empty($iconc)&&$iconc!=""){
                 echo $iconc;
             }
-
                         ?>
                     </div>
                     <?php if(!empty($subject)){ ?>
@@ -321,7 +286,6 @@
                             if(!empty($previous)){
                                 echo $previous;
                             }
-
                             if ($pages > 1) {
                                 // Make all the numbered pages:
                                 for ($j = 1; $j <= $pages; $j++) {
@@ -332,7 +296,6 @@
                                     }
                                 } 
                             }
-
                             if(!empty($next)){
                                 echo $next;
                             }
@@ -378,7 +341,7 @@
                     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <input type="submit" class="btn btn-primary" value="Logout">
+                        <a class="btn btn-danger text-white" href="logout.php">Logout</a>
                     </div>
                 </div>
             </div>
