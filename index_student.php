@@ -260,7 +260,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-danger" value="Logout">
+            <a class="btn btn-danger text-white" href="logout.php">Logout</a>
           </div>
         </div>
       </div>
